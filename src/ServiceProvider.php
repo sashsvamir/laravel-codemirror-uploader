@@ -1,0 +1,21 @@
+<?php
+namespace Sashsvamir\LaravelCodemirrorUploader;
+
+
+class ServiceProvider extends \Illuminate\Support\ServiceProvider
+{
+
+    public function boot(): void
+    {
+        // publish config
+        $this->publishes([
+            __DIR__.'/../config/codemirror-uploader.php' => config_path('codemirror-uploader.php'),
+        ]);
+
+        // load components
+        $this->loadViewsFrom([
+            __DIR__.'/../resources/views'
+        ], 'slbc');
+    }
+
+}
