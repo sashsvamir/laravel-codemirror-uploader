@@ -8,7 +8,7 @@ and adding gallery with images and implement uploading these images.
 
 #### Installation:
 ```sh
-composer require sashsvamir/laravel-codemirror-uploader:"dev-master"
+composer require sashsvamir/laravel-codemirror-uploader
 ```
 
 
