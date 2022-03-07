@@ -1,19 +1,18 @@
-
-## Codemirror with uploader
+# Codemirror with uploader
 
 This is laravel blade component that wrap codemirror component `sashsvamir/laravel-codemirror`
 and adding gallery with images and implement uploading these images.
 
 
 
-#### Installation:
+## Installation:
 ```sh
 composer require sashsvamir/laravel-codemirror-uploader
 ```
 
 
 
-### Setup
+## Setup:
 
 
 Publish `config/codemirror-uploader.php` config:
