@@ -1,5 +1,7 @@
 {
     "name": "sashsvamir/laravel-codemirror-uploader",
+    "description": "Laravel extension to turn your blade textarea component to Codemirror code editor with supporting uploading images",
+    "keywords": ["laravel", "blade", "codemirror", "textarea", "wysiwyg", "upload", "images"],
     "license": "MIT",
     "autoload": {
         "psr-4": {
