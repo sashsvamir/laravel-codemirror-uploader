@@ -1,12 +1,13 @@
 <?php
-namespace Sashsvamir\LaravelCodemirrorUploader;
+namespace Sashsvamir\LaravelCodemirrorUploader\Traits;
 
 
+use Sashsvamir\LaravelCodemirrorUploader\ImageUploaderService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
 
-trait ImageUploadable
+trait ImageUploadableController
 {
 
     abstract protected function getModelClassnameForImageUploadable(): string;

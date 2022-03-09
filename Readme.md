@@ -17,13 +17,13 @@ composer require sashsvamir/laravel-codemirror-uploader
 
 Publish `config/codemirror-uploader.php` config:
 ```sh
-./artisan vendor:publish --provider="Sashsvamir\LaravelCodemirrorUploader\ServiceProvider"
+./artisan vendor:publish --tag=codemirror-uploader-config
 ```
 ...and add directory for storing model images:
 ```php
 return [
-    'App\Models\Item' => [
-        'path' => 'items',
+    'App\Models\MyModel' => [
+        'path' => 'my_model',
     ],
 ];
 ```
@@ -33,12 +33,23 @@ return [
 Add to controller trait `ImageUploadable` with actions to get/upload/delete images,
 and method `getModelClassnameForImageUploadable()` that must return model classname where images will be attached:
 ```php
-use ImageUploadable;
+use ImageUploadableController;
 protected function getModelClassnameForImageUploadable(): string
 {
-return MyModel::class;
+    return MyModel::class;
 }
 ```
+
+
+If you want uploaded images to be deleted on destroy model, add trait to model:
+```php
+class MyModel extends Model
+{
+    use ImageUploadableModel;
+}
+```
+
+
 
 
 Next add routes with actions from above controller.
@@ -60,9 +71,9 @@ condition param `visible` need to whether show/hide model (ussaly uploader hidde
     
     <x-slbc::codemirror-uploader
         :visible="$item->id"
-        :get-url="route('admin.api.item.getImages', $item)"
-        :upload-url="route('admin.api.item.uploadImages', $item)"
-        :delete-url="route('admin.api.item.deleteImages', $item)"
+        :get-url="route('admin.api.item.getImages', $item->id ? $item : 0)"
+        :upload-url="route('admin.api.item.uploadImages', $item->id ? $item : 0)"
+        :delete-url="route('admin.api.item.deleteImages', $item->id ? $item : 0)"
     />
     
 </x-slbc::codemirror>

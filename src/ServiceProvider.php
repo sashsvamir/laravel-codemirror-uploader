@@ -10,7 +10,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         // publish config
         $this->publishes([
             __DIR__.'/../config/codemirror-uploader.php' => config_path('codemirror-uploader.php'),
-        ]);
+        ], 'codemirror-uploader-config');
 
         // load components
         $this->loadViewsFrom([

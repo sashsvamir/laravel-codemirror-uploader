@@ -102,4 +102,13 @@ class ImageUploaderService
         ];
     }
 
+    public static function deleteAll(Model $model): void
+    {
+        $path = self::getImagesPath($model);
+        $disk = self::getImagesDisk();
+
+        $result = $disk->deleteDirectory($path);
+
+        // todo: fire log if some errors happens when deleting directory
+    }
 }
