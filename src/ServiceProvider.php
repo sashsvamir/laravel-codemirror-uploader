@@ -14,7 +14,12 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
         // load routes
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
-        
+
+        // load model observer for every model
+        foreach (Config::getAliases() as $alias) {
+            (Config::getModelClassname($alias))::observe(UploadableObserver::class);
+        }
+
         // load components
         $this->loadViewsFrom([
             __DIR__.'/../resources/views'

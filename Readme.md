@@ -20,6 +20,7 @@ Publish `config/codemirror-uploader.php` config:
 ./artisan vendor:publish --tag=codemirror-uploader-config
 ```
 ...and configure params as described:
+note: defined `model_classname` in config, also will be using to attach observer to this model event listener (to delete images on model deleting)
 ```php
 return [
       'my_post' => [                              // alias, please use simple one word string here (internally it's using to identify uploadable model on post requests, also on building url requests),
@@ -47,13 +48,6 @@ Route::middleware(['web', 'auth', 'can:edit-users']) // middleware gets from con
 
 
 
-If you want uploaded images to be deleted on destroy model, add trait to model:
-```php
-class Post extends Model
-{
-    use ModelUploadableTrait;
-}
-```
 
 
 
