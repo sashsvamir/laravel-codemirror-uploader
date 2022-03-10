@@ -1,7 +1,7 @@
 # Codemirror with uploader
 
-This is laravel blade component that wrap codemirror component `sashsvamir/laravel-codemirror`
-and adding gallery with images and implement uploading these images.
+This is laravel blade component is wrapping codemirror textarea component `sashsvamir/laravel-codemirror`
+with providing implementation of uploading files for model. Also component include uploaded image gallery attached to textarea codemirror.
 
 
 
@@ -19,62 +19,55 @@ Publish `config/codemirror-uploader.php` config:
 ```sh
 ./artisan vendor:publish --tag=codemirror-uploader-config
 ```
-...and add directory for storing model images:
+...and configure params as described:
 ```php
 return [
-    'App\Models\MyModel' => [
-        'path' => 'my_model',
-    ],
+      'my_post' => [                              // alias, please use simple one word string here (internally it's using to identify uploadable model on post requests, also on building url requests),
+     
+          'model_classname' => 'App\Models\Post', // model class name
+          'storage_path' => 'posts',              // path of storage relative at ./storage/app/public/
+     
+          'route_middlewares' => [                // optional: specify route middlewares if needed, be aware — the default is empty
+              'web',
+              'auth',
+              'can:edit-post'
+          ],
+          'route_prefix' => '/admin',      // optional: add route prefix if needed
+     
+      ],
 ];
 ```
-
-
-
-Add to controller trait `ImageUploadable` with actions to get/upload/delete images,
-and method `getModelClassnameForImageUploadable()` that must return model classname where images will be attached:
+With this config, will be adding route like (you not needed set this explicit):
 ```php
-use ImageUploadableController;
-protected function getModelClassnameForImageUploadable(): string
-{
-    return MyModel::class;
-}
+Route::middleware(['web', 'auth', 'can:edit-users']) // middleware gets from config
+     ->prefix('/admin')                              // prefix gets from config
+     ->post('codemirror-uploader/my-post', UploadableController::class) // uri was generated
+     ->name('codemirror-uploader-my-post');                             // name was generated
 ```
+
 
 
 If you want uploaded images to be deleted on destroy model, add trait to model:
 ```php
-class MyModel extends Model
+class Post extends Model
 {
-    use ImageUploadableModel;
+    use ModelUploadableTrait;
 }
 ```
 
 
 
 
-Next add routes with actions from above controller.
-You can define any names or paths as you want, but action name must be named: `imagesIndex`, `imagesStore`, `imagesDestroy`:
-```php
-Route::get('/admin/api/mymodel/{item}/images', [MyController::class, 'imagesIndex'])->name('admin.api.mymodel.getImages');
-Route::post('/admin/api/mymodel/{item}/images', [MyController::class, 'imagesStore'])->name('admin.api.mymodel.uploadImages');
-Route::patch('/admin/api/mymodel/{item}/images', [MyController::class, 'imagesDestroy'])->name('admin.api.mymodel.deleteImages');
-```
 
 
 Next, you can add `<x-slbc::codemirror-uploader>` component to implement uploading images for edited model.
-Also you must passing urls with `get-url`, `upload-url`, `delete-url` params above action requests,
-condition param `visible` need to whether show/hide model (ussaly uploader hiddes for new model):
+Gallery will be added only if model is exists (saved):
 ```html
 <x-slbc::codemirror>
 
     <textarea name="body">Your text here</textarea>
     
-    <x-slbc::codemirror-uploader
-        :visible="$item->id"
-        :get-url="route('admin.api.item.getImages', $item->id ? $item : 0)"
-        :upload-url="route('admin.api.item.uploadImages', $item->id ? $item : 0)"
-        :delete-url="route('admin.api.item.deleteImages', $item->id ? $item : 0)"
-    />
+    <x-slbc::codemirror-uploader :model="$model" />
     
 </x-slbc::codemirror>
 ```

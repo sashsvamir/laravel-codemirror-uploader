@@ -12,21 +12,15 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 /**
  * Filter applied to query of items
  */
-class ImageUploaderService
+class UploadableService
 {
-
-    protected static string $configName = 'codemirror-uploader';
-
 
     protected static function getImagesPath(Model $model): string
     {
-        $configPath = self::$configName . '.' . $model::class . '.path';
+        $alias = Config::getModelAlias($model::class);
+        $config_path = Config::getStoragePath($alias);
 
-        if (! $path = config($configPath)) {
-            throw new \Exception('Config "' . $configPath . '" not found.');
-        }
-
-        return (new WhitespacePathNormalizer)->normalizePath($path . '/' . $model->id);
+        return (new WhitespacePathNormalizer)->normalizePath($config_path . '/' . $model->getKey());
     }
 
     protected static function getImagesDisk(): FilesystemAdapter
@@ -34,7 +28,15 @@ class ImageUploaderService
         return Storage::disk('public');
     }
 
-    public static function get(Model $model)
+    protected static function generateFilename(string $basename, int $iteration): string
+    {
+        $filename = pathinfo($basename, PATHINFO_FILENAME);
+        $extension = pathinfo($basename, PATHINFO_EXTENSION);
+        $suffix = $iteration === 0 ? '' : '_'.$iteration;
+        return $filename . $suffix . '.' . $extension;
+    }
+
+    public static function getFiles(Model $model)
     {
         $path = self::getImagesPath($model);
         $disk = self::getImagesDisk();
@@ -51,15 +53,7 @@ class ImageUploaderService
         return $files;
     }
 
-    protected static function generateFilename(string $basename, int $iteration): string
-    {
-        $filename = pathinfo($basename, PATHINFO_FILENAME);
-        $extension = pathinfo($basename, PATHINFO_EXTENSION);
-        $suffix = $iteration === 0 ? '' : '_'.$iteration;
-        return $filename . $suffix . '.' . $extension;
-    }
-
-    public static function create(Model $model, UploadedFile $file)
+    public static function createFile(Model $model, UploadedFile $file)
     {
         $path = self::getImagesPath($model);
         $disk = self::getImagesDisk();
@@ -78,7 +72,7 @@ class ImageUploaderService
         ];
     }
 
-    public static function delete(Model $model, array $files)
+    public static function deleteFile(Model $model, array $files)
     {
         $path = self::getImagesPath($model);
         $disk = self::getImagesDisk();
@@ -102,13 +96,12 @@ class ImageUploaderService
         ];
     }
 
-    public static function deleteAll(Model $model): void
+    public static function deleteAllFiles(Model $model): void
     {
         $path = self::getImagesPath($model);
         $disk = self::getImagesDisk();
 
         $result = $disk->deleteDirectory($path);
-
-        // todo: fire log if some errors happens when deleting directory
+        // todo: fire log if some errors happens when deleting directory (when $result is false)
     }
 }

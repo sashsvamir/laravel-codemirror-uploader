@@ -1,21 +1,22 @@
 <?php
 /**
- * @var $getUrl string
- * @var $uploadUrl string
- * @var $deleteUrl string
- * @var $visible bool
+ * @var $model \Illuminate\Database\Eloquent\Model
  */
 ?>
 
 @props([
-    'getUrl',
-    'uploadUrl',
-    'deleteUrl',
-    'visible',
+    'model',
 ])
 
 
-@if($visible)
+@if(!!$model->getKey())
+
+@php
+    $model_alias = \Sashsvamir\LaravelCodemirrorUploader\Config::getModelAlias($model::class);
+    $route_name = \Sashsvamir\LaravelCodemirrorUploader\Config::getRouteName($model_alias);
+    $route_url = route($route_name);
+    $model_id = $model->getKey();
+@endphp
 
 
 @pushOnce('styles')
@@ -130,11 +131,10 @@
                     this.cmElement = cmWrapperEl.querySelector('.CodeMirror')
                     this.cm = this.cmElement.CodeMirror
                     const uploaderWrapperEl = cmWrapperEl.querySelector('[data-uploader-wrapper]')
-                    this.options = {
-                        getUrl: uploaderWrapperEl.getAttribute('data-uploader-get-url'),
-                        uploadUrl: uploaderWrapperEl.getAttribute('data-uploader-upload-url'),
-                        deleteUrl: uploaderWrapperEl.getAttribute('data-uploader-delete-url'),
-                    }
+
+                    this.url = uploaderWrapperEl.getAttribute('data-uploader-url')
+                    this.model_alias = uploaderWrapperEl.getAttribute('data-uploader-model-alias')
+                    this.model_id = uploaderWrapperEl.getAttribute('data-uploader-model-id')
 
                     this.addBtnShowGalleryHandler(
                         cmWrapperEl.querySelector('.btn.get-uploaded-images'),
@@ -162,7 +162,16 @@
                 getUploadedImages(gallery) {
                     gallery.innerHTML = 'Loading...'
 
-                    axios.get(this.options.getUrl)
+                    // get
+                    axios({
+                        url: this.url,
+                        method: 'post',
+                        data: {
+                            action: 'get',
+                            model_alias: this.model_alias,
+                            model_id: this.model_id,
+                        },
+                    })
                         .then(res => {
                             const images = res.data
                             if (images.length) {
@@ -195,7 +204,18 @@
                     gallery.querySelectorAll('.thumb').forEach(thumb => {
                         const filename = thumb.getAttribute('data-title')
                         thumb.querySelector('.delete').addEventListener('click', e => {
-                            axios.patch(this.options.deleteUrl, { files: [filename] })
+
+                            // delete
+                            axios({
+                                url: this.url,
+                                method: 'post',
+                                data: {
+                                    action: 'delete',
+                                    model_alias: this.model_alias,
+                                    model_id: this.model_id,
+                                    files: [filename],
+                                },
+                            })
                                 .then(res => {
                                     thumb.style.display = 'none'
                                     if (res.data.filesCount === 0) {
@@ -222,9 +242,19 @@
 
 
                 // upload image
+                /**
+                 * @param {FormData} data
+                 * @param {Function} callback
+                 */
                 uploadFile(data, callback) {
+
+                    data.append('action', 'upload')
+                    data.append('model_alias', this.model_alias)
+                    data.append('model_id', this.model_id)
+
+                    // upload
                     axios({
-                        url: this.options.uploadUrl,
+                        url: this.url,
                         method: 'post',
                         data,
                     })
@@ -336,9 +366,9 @@
 
 <div class="mb-3" style="margin-top: -12px"
      data-uploader-wrapper
-     data-uploader-get-url="{{ $getUrl }}"
-     data-uploader-upload-url="{{ $uploadUrl }}"
-     data-uploader-delete-url="{{ $deleteUrl }}"
+     data-uploader-model-alias="{{ $model_alias }}"
+     data-uploader-model-id="{{ $model_id }}"
+     data-uploader-url="{{ $route_url }}"
 >
     <div class="get-uploaded-images btn btn-info btn-sm text-white">Show uploaded images</div>
     <div class="uploaded-images-container"></div>
