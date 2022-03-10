@@ -128,6 +128,7 @@
 
                 constructor(cmWrapperEl) {
                     // define objects
+                    this.cmWrapperElement = cmWrapperEl
                     this.cmElement = cmWrapperEl.querySelector('.CodeMirror')
                     this.cm = this.cmElement.CodeMirror
                     const uploaderWrapperEl = cmWrapperEl.querySelector('[data-uploader-wrapper]')
@@ -141,6 +142,7 @@
                         cmWrapperEl.querySelector('.uploaded-images-container')
                     )
 
+                    this.dragThumb = null
                     this.addDragHandlers()
                 }
 
@@ -270,20 +272,19 @@
                 // add handlers on drag&drop over codemirror area
                 // todo: try to add listener on cm
                 addDragHandlers() {
-                    let dragThumb = null
 
-                    // on dragstart: if dragged gallery thumb, keep them
-                    document.addEventListener('dragstart', e => {
+                    // on dragstart: if dragged gallery thumb, keep them to drop later
+                    this.cmWrapperElement.addEventListener('dragstart', e => {
                         if (e.target.classList.contains('thumb')) {
-                            dragThumb = e.target
+                            this.dragThumb = e.target
                         } else {
-                            dragThumb = null
+                            this.dragThumb = null
                         }
                     }, false)
 
 
                     // on dragover: set codemirror cursor position from mouse pointer
-                    document.addEventListener('dragover', e => {
+                    this.cmElement.addEventListener('dragover', e => {
                         e.preventDefault() // prevent open link (for some elements)
                         const xy = { left: e.x, top: e.y }
                         const pos = this.cm.coordsChar(xy, 'string')
@@ -291,21 +292,21 @@
                     }, false)
 
 
-                    // on dragenter: add style
+                    // on dragenter (adding on all document): add style
                     document.addEventListener('dragenter', e => {
                         const cmTarget = e.target.classList.contains('CodeMirror')
                             ? e.target
                             : e.target.closest('.CodeMirror')
 
                         if (cmTarget) {
-                            this.cmElement.classList.add('dragover')
+                            cmTarget.classList.add('dragover') // add style only to specific cm element
                         } else {
-                            this.cmElement.classList.remove('dragover')
+                            this.cmElement.classList.remove('dragover') // remove style from all cm
                         }
                     }, false)
 
 
-                    // on dragend: remove style
+                    // on dragend (adding on all document): remove style
                     document.addEventListener('dragend', e => {
                         this.cmElement.classList.remove('dragover')
                     }, false)
@@ -315,7 +316,7 @@
 
 
                     // on drop: if file -> upload file, if thumb -> add thumb url
-                    document.addEventListener('drop', e => {
+                    this.cmElement.addEventListener('drop', e => {
 
                         const cmTarget = e.target.classList.contains('CodeMirror')
                             ? e.target
@@ -341,10 +342,10 @@
                                 }
 
                                 // if drop thumb, add thumb url
-                            } else if (dragThumb.nodeType) {
+                            } else if (this.dragThumb.nodeType) {
 
                                 // insert image
-                                const fileurl = dragThumb.querySelector('img').getAttribute('src')
+                                const fileurl = this.dragThumb.querySelector('img').getAttribute('src')
                                 this.insertImgToCodemirror(fileurl)
                             }
                         }
