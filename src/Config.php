@@ -11,7 +11,7 @@ class Config
      */
     public static function getAliases(): array
     {
-        return array_keys(config(self::$configName));
+        return array_keys(config(self::$configName, []));
     }
 
     /**
