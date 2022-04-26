@@ -42,20 +42,34 @@
             pointer-events: none;
         }
 
-        .get-uploaded-images {
+        .btn-get-uploaded-images {
+            position: absolute;
+            right: 12px;
+            bottom: 17px;
+            width: 32px;
+            height: 30px;
+            background: white center no-repeat;
+            background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjwhRE9DVFlQRSBzdmcgIFBVQkxJQyAnLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4nICAnaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkJz48c3ZnIGlkPSJMYXllcl8xIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA2NCA2NDsiIHZlcnNpb249IjEuMSIgdmlld0JveD0iMCAwIDY0IDY0IiB4bWw6c3BhY2U9InByZXNlcnZlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj48c3R5bGUgdHlwZT0idGV4dC9jc3MiPgoJLnN0MHtmaWxsOiMxMzQ1NjM7fQo8L3N0eWxlPjxnPjxnIGlkPSJJY29uLUltYWdlIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyNzguMDAwMDAwLCAyMzIuMDAwMDAwKSI+PHBhdGggY2xhc3M9InN0MCIgZD0iTS0yMjYuMi0xODEuNmgtMzkuNWMtMi4zLDAtNC4yLTEuOS00LjItNC4ydi0yOC4yYzAtMi4zLDEuOS00LjIsNC4yLTQuMmgzOS41ICAgICBjMi4zLDAsNC4yLDEuOSw0LjIsNC4ydjI4LjJDLTIyMi0xODMuNS0yMjMuOS0xODEuNi0yMjYuMi0xODEuNkwtMjI2LjItMTgxLjZ6IE0tMjY1LjgtMjE1LjVjLTAuOCwwLTEuNCwwLjYtMS40LDEuNHYyOC4yICAgICBjMCwwLjgsMC42LDEuNCwxLjQsMS40aDM5LjVjMC44LDAsMS40LTAuNiwxLjQtMS40di0yOC4yYzAtMC44LTAuNi0xLjQtMS40LTEuNEgtMjY1LjhMLTI2NS44LTIxNS41eiIgaWQ9IkZpbGwtMTIiLz48cGF0aCBjbGFzcz0ic3QwIiBkPSJNLTIzOC45LTIwMS41Yy0zLjEsMC01LjUtMi41LTUuNS01LjVzMi41LTUuNSw1LjUtNS41czUuNSwyLjUsNS41LDUuNSAgICAgUy0yMzUuOS0yMDEuNS0yMzguOS0yMDEuNUwtMjM4LjktMjAxLjV6IE0tMjM4LjktMjEwYy0xLjYsMC0yLjksMS4zLTIuOSwyLjljMCwxLjYsMS4zLDIuOSwyLjksMi45YzEuNiwwLDIuOS0xLjMsMi45LTIuOSAgICAgQy0yMzYtMjA4LjctMjM3LjMtMjEwLTIzOC45LTIxMEwtMjM4LjktMjEweiIgaWQ9IkZpbGwtMTMiLz48cG9seWxpbmUgY2xhc3M9InN0MCIgaWQ9IkZpbGwtMTQiIHBvaW50cz0iLTIzMS40LC0xODIuMSAtMjU0LjUsLTIwMy44IC0yNjcuNywtMTkxLjYgLTI2OS41LC0xOTMuNSAtMjU0LjUsLTIwNy40IC0yMjkuNiwtMTg0ICAgICAgLTIzMS40LC0xODIuMSAgICAiLz48cG9seWxpbmUgY2xhc3M9InN0MCIgaWQ9IkZpbGwtMTUiIHBvaW50cz0iLTIyNC4yLC0xODkuMyAtMjMxLjksLTE5NS41IC0yMzguMywtMTkwLjIgLTI0MCwtMTkyLjMgLTIzMS45LC0xOTguOSAtMjIyLjYsLTE5MS4zICAgICAgLTIyNC4yLC0xODkuMyAgICAiLz48L2c+PC9nPjwvc3ZnPg==');
+            background-size: contain;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            opacity: .4;
+            transition: opacity .3s;
             cursor: pointer;
-            margin-top: 3px;
+        }
+        .btn-get-uploaded-images:hover {
+            opacity: 1;
         }
 
         .uploaded-images-container {
             display: none;
             position: absolute;
+            right: 50px;
+            bottom: -30px;
             border: 1px solid #ccc;
             border-radius: 4px;
             min-height: 174px;
             min-width: 180px;
-            margin-top: -170px;
-            margin-left: 120px;
             background: #fff;
             z-index: 150;
             padding: 16px;
@@ -77,6 +91,7 @@
 
         .uploaded-images-container .thumb img {
             max-width: 100%;
+            max-height: 100%;
             pointer-events: none;
         }
 
@@ -85,7 +100,7 @@
             bottom: 6px;
             left: 0;
             width: 100%;
-            background: #fff;
+            background: rgba(255,255,255,.8);
         }
         .uploaded-images-container .thumb .info .title {
             font-size: 11px;
@@ -138,7 +153,7 @@
                     this.model_id = uploaderWrapperEl.getAttribute('data-uploader-model-id')
 
                     this.addBtnShowGalleryHandler(
-                        cmWrapperEl.querySelector('.btn.get-uploaded-images'),
+                        cmWrapperEl.querySelector('.btn-get-uploaded-images'),
                         cmWrapperEl.querySelector('.uploaded-images-container')
                     )
 
@@ -365,13 +380,13 @@
 
 
 
-<div class="mb-3" style="margin-top: -12px"
+<div class="mb-3" style="margin-top: -12px; position: relative;"
      data-uploader-wrapper
      data-uploader-model-alias="{{ $model_alias }}"
      data-uploader-model-id="{{ $model_id }}"
      data-uploader-url="{{ $route_url }}"
 >
-    <div class="get-uploaded-images btn btn-info btn-sm text-white">Show uploaded images</div>
+    <div class="btn-get-uploaded-images" title="Show uploaded images"></div>
     <div class="uploaded-images-container"></div>
 </div>
 
