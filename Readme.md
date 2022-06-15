@@ -54,16 +54,16 @@ Route::middleware(['web', 'auth', 'can:edit-users']) // middleware gets from con
 
 
 
-Next, you can add `<x-slbc::codemirror-uploader>` component to implement uploading images for edited model.
+Next, you can add `<x-slbc::textarea-codemirror-uploader>` component to implement uploading images for edited model.
 Gallery will be added only if model is exists (saved):
 ```html
-<x-slbc::codemirror>
+<x-slbc::textarea-codemirror>
 
     <textarea name="body">Your text here</textarea>
     
-    <x-slbc::codemirror-uploader :model="$model" />
+    <x-slbc::textarea-codemirror-uploader :model="$model" />
     
-</x-slbc::codemirror>
+</x-slbc::textarea-codemirror>
 ```
 
 
